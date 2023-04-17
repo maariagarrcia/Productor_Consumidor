@@ -102,11 +102,32 @@ def comer(id_comensal, colas: list) -> None:
     print(Fore.RED+"- Comensal", id_comensal, "He comido suficiente...", max_platos, "<-----------"+Fore.WHITE)
 
 
-def crear_cocineros():
-    pass
+def crear_cocineros(cantidad, cola_hamburguesas, cola_suchi) -> list():
+    print("* Creando cocineros...")
+    cocineros = []
+    nombres_comida = ["hamburguesa", "sushi"]
+    colas_comida = [cola_hamburguesas, cola_suchi]
 
-def crear_comensales():
-    pass
+    for id_cocinero in range(0, cantidad):
+        # Seleccionar que comida elabora el cocinero
+        nombre_comida = nombres_comida[id_cocinero % 2]
+        cola_comida = colas_comida[id_cocinero % 2]
+
+        cocineros.append(
+            Process(target=cocinar, args=[id_cocinero, nombre_comida, cola_comida]))
+
+    return cocineros
+
+
+def crear_comensales(cantidad, cola_hamburguesas, cola_suchi) -> list():
+    cocineros = []
+
+    print("* Creando comensales...")
+    for id_comensal in range(0, cantidad):
+        cocineros.append(
+            Process(target=comer, args=[id_comensal, [cola_hamburguesas, cola_suchi]]))
+
+    return cocineros
 
 
 def esperar_finalizacion_procesos(procesos):
