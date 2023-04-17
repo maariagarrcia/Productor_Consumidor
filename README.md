@@ -1,4 +1,4 @@
-# Simulacion del Productor y Cosumidor: RESTAURANTE
+# Simulación del Productor y Cosumidor: RESTAURANTE
 Para la creación de esta simulación usamos colas sincronizadas aunquese puede hacer de muchas formas diferentes.
 
 Hemos creado cocineros y clientes que corresponden al productor y consumidor respectivamente.
