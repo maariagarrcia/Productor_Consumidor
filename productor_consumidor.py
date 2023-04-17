@@ -29,7 +29,7 @@
 #
 
 ## FUNCIONES QUE NECESITAMOS ---> - crear cocineros y comensales
-##                                - cocinar
+#                                 - cocinar: hamburguesas y sushi
 #                                 - comer: hamburguesas y sushi
 #                                 - crear colas
 #                                 - crear procesos 
@@ -137,7 +137,33 @@ def esperar_finalizacion_procesos(procesos):
         p.join()
 
 def main():
-    pass
+    print()
+    print("Simulacion de Productor/Consumidor: Restaurante")
+    print("· Se crean 2 cocineros")
+    print("· Se crean 10 comensales")
+    print("· Se limita el tamaño de las colas de comida")
+    print("· Si las colas estan llenas los cocineros paran")
+    print("· Si las colas estan vacias los comensales esperan")
+    print("· Los comensales comensales comen un máximo de 4 platos")
+    print("·")
+
+    # Crear colas (una por comida) capacidad máxima para 5 elementos
+    max_hamburguesas = 3
+    cola_hamburguesas = Queue(max_hamburguesas)
+    max_sushi = 2
+    cola_suchi = Queue(max_sushi)
+
+    # Crear procesos
+    procesos = []
+    procesos = crear_cocineros(2, cola_hamburguesas, cola_suchi)
+    procesos = procesos + crear_comensales(10, cola_hamburguesas, cola_suchi)
+
+    # Ejecutar procesos consumidores y productores (comensales y cocineros)
+    arrancar_todo(procesos)
+
+    esperar_finalizacion_procesos(procesos)
+
+    print("*** Simulación finalizada ***")
 
 if __name__ == "__main__":
     main()
