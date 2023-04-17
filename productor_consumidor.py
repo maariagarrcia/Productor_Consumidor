@@ -72,8 +72,35 @@ def cocinar(id_cocinero: int, nombre_comida: str, cola: Queue) -> None:
                   "No me necesitan más!!!", num_plato, "<----------"+Fore.WHITE)
             return
 
-def comer():
-    pass
+def comer(id_comensal, colas: list) -> None:
+    # Decidir cuantos platos quier comer
+    # max_platos = random.randint(2, 5)
+    max_platos = 2
+
+    for num_platos in range(1, max_platos+1):
+        # Seleccionar comida
+        comida: Queue = random.choice(colas)
+
+        # Si hay comida en la cola coger plato.
+        # Si no hay comida este proceso se bloquea.
+        # Si la espera supera 5s se genera un error.
+        try:
+            plato = comida.get(block=True, timeout=3)
+
+            # Comer -> Simular tiempo consumición plato
+            time.sleep(random.random()*10)
+            print(Fore.GREEN+"- Comensal"+Fore.WHITE, id_comensal, "Comiendo", plato)
+
+        except:
+            # Se ha superado el tiempo máximo de espera de un
+            # plato por parte del cliente que decide abandonar
+            # el restaurante enfadado :-0
+            print(Fore.RED+"- Comensal", id_comensal,
+                  "Me voy!!!. Son muuy lentos :-(", num_platos-1,"<-----------"+Fore.WHITE)
+            return 
+
+    print(Fore.RED+"- Comensal", id_comensal, "He comido suficiente...", max_platos, "<-----------"+Fore.WHITE)
+
 
 def crear_cocineros():
     pass
