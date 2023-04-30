@@ -1,3 +1,41 @@
+# Colas
+# =====
+#   https://docs.python.org/3/library/queue.html#queue.Queue
+#   https://superfastpython.com/multiprocessing-queue-in-python/
+#
+#
+# Descripción de la simulación del productor/consumidor
+# =====================================================
+# · Se usa multprocessing.
+# · Simulamos un restaurante. (Buffet)
+# · Los productores son COCINEROS que producen comida.
+# · Hay dos tipos de comida: hambuguesas y suchi.
+# · Los cocineros seleccionan el tipo de comida aleatoriamente.
+# · Los consumidores son los COMENSALES.
+# · Los comensales escojen comida aleatoriamente.
+# · Creo una cola por tipo de comida
+#       (Muy importante: las colas son seguras para multiprocesamiento).
+# · Despues de cocinar un plato de comida hay un retardo aleatorio.
+# · Despues de consumir un plato hay un retardo aleatorio.
+# · Se limita el tamaño de las colas de comida a 5 platos.
+# · Si las colas estan llenas los cocineros paran.
+# · Si las colas estan vacias los comensales esperan.
+#
+# Parámetros de la simulación
+# ===========================
+# · Se crean 2 cocineros.
+# · Se crean 10 comensales.
+# · Los comensales comensales comen de 2 a 5 platos máximo.
+#
+
+## FUNCIONES QUE NECESITAMOS ---> - crear cocineros y comensales
+#                                 - cocinar: hamburguesas y sushi
+#                                 - comer: hamburguesas y sushi
+#                                 - crear colas
+#                                 - crear procesos 
+#  
+
+
 from multiprocessing import Process, Queue
 from colorama import Fore
 import time
@@ -73,6 +111,74 @@ class Comensal(Process):
 
         print(Fore.RED+"- Comensal", self.id_comensal, "He comido suficiente...", max_platos, "<-----------"+Fore.WHITE)
 
-class Comida:
 
-    
+class Restaurante:
+    def __init__(self, cocineros, comensales):
+        self.cocineros = cocineros
+        self.comensales = comensales
+        self.cola_hamburguesas = Queue(3)
+        self.cola_sushi = Queue(2)
+
+    def crear_cocineros(self):
+        print("* Creando cocineros...")
+        cocineros = []
+        nombres_comida = ["hamburguesa", "sushi"]
+        colas_comida = [self.cola_hamburguesas, self.cola_sushi]
+
+        for id_cocinero in range(0, self.cocineros):
+            # Seleccionar que comida elabora el cocinero
+            nombre_comida = nombres_comida[id_cocinero % 2]
+            cola_comida = colas_comida[id_cocinero % 2]
+
+            cocinero = Cocinero(id_cocinero, nombre_comida, cola_comida)
+            cocineros.append(
+                Process(target=cocinero.cocinar))
+
+        return cocineros
+
+    def crear_comensales(self):
+        cocineros = []
+
+        print("* Creando comensales...")
+        for id_comensal in range(0, self.comensales):
+            comensal = Comensal(id_comensal, [self.cola_hamburguesas, self.cola_sushi])
+            cocineros.append(
+                Process(target=comensal.comer))
+
+        return cocineros
+
+    def arrancar_todo(self, procesos):
+        print("* Arrancando procesos...")
+        for p in procesos:
+            p.start()
+
+    def esperar_finalizacion_procesos(self, procesos):
+        print("* Esperando finalización procesos...")
+        print("·")
+        for p in procesos:
+            p.join()
+
+    def main(self):
+        print()
+        print("Simulacion de Productor/Consumidor: Restaurante")
+        print("· Se crean 2 cocineros")
+        print("· Se crean 10 comensales")
+        print("· Se limita el tamaño de las colas de comida")
+        print("· Si las colas estan llenas los cocineros paran")
+        print("· Si las colas estan vacias los comensales esperan")
+        print("· Los comensales comensales comen un máximo de 4 platos")
+
+        # Crear procesos
+        procesos = []
+        procesos = self.crear_cocineros()
+        procesos = procesos + self.crear_comensales()
+
+        # Ejecutar procesos consumidores y productores (comensales y cocineros)
+        self.arrancar_todo(procesos)
+
+        self.esperar_finalizacion_procesos(procesos)
+
+        print("*** Simulación finalizada ***")
+
+        
+
