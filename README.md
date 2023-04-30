@@ -1,6 +1,6 @@
 # Simulación del Productor y Cosumidor: RESTAURANTE
 
-1)EXPLICACIÓN
+1) EXPLICACIÓN
 
 El modelo de productor y consumidor se utiliza en programación concurrente para resolver el problema de espera cuando el productor y el consumidor tienen diferentes velocidades de procesamiento. Los beneficios de este modelo incluyen el equilibrio entre productores y consumidores y la eliminación de la necesidad de que estén directamente conectados. 
 
